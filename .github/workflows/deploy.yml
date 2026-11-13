@@ -4,6 +4,9 @@ on:
   push:
     branches: ['main']
   workflow_dispatch:
+  schedule:
+    # Sync source files from olist-lakehouse-pipeline daily at 03:00 UTC
+    - cron: '0 3 * * *'
 
 permissions:
   contents: read
@@ -18,8 +21,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout learning site
         uses: actions/checkout@v4
+        with:
+          path: olist-learning-site
+
+      - name: Checkout olist-lakehouse-pipeline
+        uses: actions/checkout@v4
+        with:
+          repository: kidwon/olist-lakehouse-pipeline
+          path: olist-lakehouse-pipeline
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -27,15 +38,17 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
+        working-directory: olist-learning-site
         run: npm install
 
-      - name: Build
+      - name: Build (auto-syncs source files)
+        working-directory: olist-learning-site
         run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./olist-learning-site/dist
 
   deploy:
     environment:

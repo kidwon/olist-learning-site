@@ -16,6 +16,7 @@ import { PipelineSimulator } from './components/PipelineSimulator';
 import { ComparisonView } from './components/ComparisonView';
 import { SqlExplorerView } from './components/SqlExplorerView';
 import { ADRView } from './components/ADRView';
+import { SourceDrawer } from './components/SourceDrawer';
 
 type Tab = 'roadmap' | 'simulator' | 'compare' | 'sql' | 'adrs';
 
@@ -28,6 +29,7 @@ export function App() {
     return saved ? saved === 'dark' : true;
   });
   const [tab, setTab] = useState<Tab>('roadmap');
+  const [openFile, setOpenFile] = useState<string | null>(null);
   const [completedIds, setCompletedIds] = useState<string[]>(() => {
     try {
       return JSON.parse(localStorage.getItem('olist-completed') || '[]');
@@ -186,11 +188,12 @@ export function App() {
             lang={lang}
             completedIds={completedIds}
             onToggleComplete={toggleComplete}
+            onOpenSource={setOpenFile}
           />
         )}
         {tab === 'simulator' && <PipelineSimulator lang={lang} />}
-        {tab === 'compare' && <ComparisonView lang={lang} />}
-        {tab === 'sql' && <SqlExplorerView lang={lang} />}
+        {tab === 'compare' && <ComparisonView lang={lang} onOpenSource={setOpenFile} />}
+        {tab === 'sql' && <SqlExplorerView lang={lang} onOpenSource={setOpenFile} />}
         {tab === 'adrs' && (
           <ADRView
             lang={lang}
@@ -199,6 +202,13 @@ export function App() {
           />
         )}
       </div>
+
+      <SourceDrawer
+        filePath={openFile}
+        lang={lang}
+        onClose={() => setOpenFile(null)}
+        onSelectFile={setOpenFile}
+      />
     </div>
   );
 }

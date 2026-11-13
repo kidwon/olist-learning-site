@@ -6,6 +6,7 @@ import { CodeHighlight } from './CodeHighlight';
 
 interface Props {
   lang: Lang;
+  onOpenSource?: (filePath: string) => void;
 }
 
 const CATEGORIES: { id: 'all' | SqlCategory; label: Record<Lang, string> }[] = [
@@ -17,7 +18,7 @@ const CATEGORIES: { id: 'all' | SqlCategory; label: Record<Lang, string> }[] = [
   { id: 'dashboard', label: { zh: 'AI/BI 看板', ja: 'AI/BI ダッシュボード', en: 'AI/BI Dashboard' } },
 ];
 
-export const SqlExplorerView: React.FC<Props> = ({ lang }) => {
+export const SqlExplorerView: React.FC<Props> = ({ lang, onOpenSource }) => {
   const [cat, setCat] = useState<'all' | SqlCategory>('all');
   const [query, setQuery] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -109,10 +110,14 @@ export const SqlExplorerView: React.FC<Props> = ({ lang }) => {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 rounded bg-slate-100 dark:bg-navy-950 px-2.5 py-1 font-mono text-[11px] text-slate-600 dark:text-slate-400">
+                <button
+                  type="button"
+                  onClick={() => onOpenSource?.(item.sourceFile)}
+                  className="inline-flex items-center gap-1 rounded bg-slate-100 dark:bg-navy-950 px-2.5 py-1 font-mono text-[11px] text-slate-600 dark:text-slate-400 hover:text-lava-500 transition-colors"
+                >
                   <FileCode2 className="w-3.5 h-3.5 text-lava-500" />
                   {item.sourceFile} ({item.lineRange})
-                </span>
+                </button>
                 <button
                   type="button"
                   onClick={() => handleCopy(item.id, item.sql)}

@@ -7,9 +7,10 @@ import { CodeHighlight } from './CodeHighlight';
 
 interface Props {
   lang: Lang;
+  onOpenSource?: (filePath: string) => void;
 }
 
-export const ComparisonView: React.FC<Props> = ({ lang }) => {
+export const ComparisonView: React.FC<Props> = ({ lang, onOpenSource }) => {
   const [activeDim, setActiveDim] = useState(COMPARISON_DIMENSIONS[0].id);
   const t = UI_TEXT[lang];
   const dim = COMPARISON_DIMENSIONS.find((d) => d.id === activeDim) ?? COMPARISON_DIMENSIONS[0];
@@ -69,7 +70,13 @@ export const ComparisonView: React.FC<Props> = ({ lang }) => {
               <Code2 className="w-4 h-4" />
               {t.compare.imperativeLabel}
             </span>
-            <span className="font-mono text-[11px] text-slate-500">{dim.imperative.file}</span>
+            <button
+              type="button"
+              onClick={() => onOpenSource?.(dim.imperative.file.split(' ')[0])}
+              className="font-mono text-[11px] text-slate-500 hover:text-lava-500 underline decoration-dotted"
+            >
+              {dim.imperative.file}
+            </button>
           </div>
           <div className="p-4 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
             {dim.imperative.approach[lang]}
@@ -89,7 +96,13 @@ export const ComparisonView: React.FC<Props> = ({ lang }) => {
               <Sparkles className="w-4 h-4" />
               {t.compare.declarativeLabel}
             </span>
-            <span className="font-mono text-[11px] text-slate-500">{dim.declarative.file}</span>
+            <button
+              type="button"
+              onClick={() => onOpenSource?.(dim.declarative.file.split(' ')[0])}
+              className="font-mono text-[11px] text-slate-500 hover:text-lava-500 underline decoration-dotted"
+            >
+              {dim.declarative.file}
+            </button>
           </div>
           <div className="p-4 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
             {dim.declarative.approach[lang]}

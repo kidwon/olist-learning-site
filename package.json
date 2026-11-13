@@ -4,7 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "sync-sources": "node scripts/sync-sources.mjs",
+    "predev": "node scripts/sync-sources.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/sync-sources.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
   },

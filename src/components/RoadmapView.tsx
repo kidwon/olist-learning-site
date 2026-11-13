@@ -23,11 +23,12 @@ interface Props {
   lang: Lang;
   completedIds: string[];
   onToggleComplete: (id: string) => void;
+  onOpenSource?: (filePath: string) => void;
 }
 
 const PHASES: PhaseId[] = ['ingestion', 'silver', 'gold', 'scale'];
 
-export const RoadmapView: React.FC<Props> = ({ lang, completedIds, onToggleComplete }) => {
+export const RoadmapView: React.FC<Props> = ({ lang, completedIds, onToggleComplete, onOpenSource }) => {
   const [activeId, setActiveId] = useState<string>(MODULES[0].id);
   const [copied, setCopied] = useState(false);
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
@@ -159,16 +160,27 @@ export const RoadmapView: React.FC<Props> = ({ lang, completedIds, onToggleCompl
             </button>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-            <span className="inline-flex items-center gap-1 font-mono">
-              <BookOpen className="w-3.5 h-3.5 text-slate-400" />
+          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <button
+              type="button"
+              onClick={() => onOpenSource?.(mod.notebookPath)}
+              className="inline-flex items-center gap-1.5 font-mono bg-lava-500/10 text-lava-600 dark:text-lava-400 hover:bg-lava-500/20 px-2.5 py-1 rounded-md transition-colors"
+              title="View full notebook"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
               {mod.notebookPath}
-            </span>
+            </button>
             {mod.sourceFiles.map((sf) => (
-              <span key={sf} className="inline-flex items-center gap-1 font-mono bg-slate-100 dark:bg-navy-950 px-2 py-0.5 rounded">
+              <button
+                key={sf}
+                type="button"
+                onClick={() => onOpenSource?.(sf)}
+                className="inline-flex items-center gap-1 font-mono bg-slate-100 dark:bg-navy-950 hover:border-lava-500/50 border border-transparent hover:text-lava-500 px-2.5 py-1 rounded-md transition-colors"
+                title="View full source"
+              >
                 <FileCode2 className="w-3 h-3 text-slate-400" />
                 {sf}
-              </span>
+              </button>
             ))}
           </div>
         </div>
